@@ -9,7 +9,7 @@ export default function Page() {
 
   return (
     <main>
-      <h1>ホテル検索アプリ</h1>
+      <h1>関東全域のホテル検索アプリ</h1>
       <SearchForm onSearch={setSearchParams} />
       {searchParams && <HotelList searchParams={searchParams} />}
     </main>

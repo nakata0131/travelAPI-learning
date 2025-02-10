@@ -2,37 +2,60 @@
 
 import { useState } from 'react';
 
+// 関東地方の都県とエリアコードのマッピング（例）
+const areaMapping = {
+  "東京": "130010",
+  "神奈川": "140010",
+  "埼玉": "110010",
+  "千葉": "120010",
+  "茨城": "080010",
+  "栃木": "090010",
+  "群馬": "100010",
+};
+
 export default function SearchForm({ onSearch }) {
-  const [destination, setDestination] = useState('');
+  // ユーザーが選択する都県の表示名を保持
+  const [areaName, setAreaName] = useState('');
   const [checkInDate, setCheckInDate] = useState('');
   const [checkOutDate, setCheckOutDate] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!destination || !checkInDate || !checkOutDate) {
+    if (!areaName || !checkInDate || !checkOutDate) {
       setError('すべての検索条件を入力してください');
       return;
     }
-    // 入力された値を上位コンポーネントに渡す
-    onSearch({ destination, checkInDate, checkOutDate });
+    // マッピングからエリアコードに変換
+    const areaCode = areaMapping[areaName];
+    if (!areaCode) {
+      setError('入力されたエリアに対応するコードが見つかりません');
+      return;
+    }
+    // エリアコードを含めた検索条件を渡す
+    onSearch({ destination: areaCode, checkInDate, checkOutDate });
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label htmlFor="destination">Destination:</label>
-        <input
-          type="text"
-          id="destination"
-          placeholder="例: 東京"
-          value={destination}
-          onChange={(e) => setDestination(e.target.value)}
+        <label htmlFor="areaName">エリア:</label>
+        <select
+          id="areaName"
+          value={areaName}
+          onChange={(e) => setAreaName(e.target.value)}
           required
-        />
+        >
+          <option value="">選択してください</option>
+          {Object.keys(areaMapping).map((pref, index) => (
+            <option key={index} value={pref}>
+              {pref}
+            </option>
+          ))}
+        </select>
       </div>
       <div>
-        <label htmlFor="checkInDate">Check-in Date:</label>
+        <label htmlFor="checkInDate">チェックイン日:</label>
         <input
           type="date"
           id="checkInDate"
@@ -42,7 +65,7 @@ export default function SearchForm({ onSearch }) {
         />
       </div>
       <div>
-        <label htmlFor="checkOutDate">Check-out Date:</label>
+        <label htmlFor="checkOutDate">チェックアウト日:</label>
         <input
           type="date"
           id="checkOutDate"
@@ -52,7 +75,7 @@ export default function SearchForm({ onSearch }) {
         />
       </div>
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      <button type="submit">Search</button>
+      <button type="submit">検索</button>
     </form>
   );
 }
