@@ -6,28 +6,30 @@ import { useAppContext } from "../context/App.context";
 export default function HotelList() {
   const { searchParams } = useAppContext();
   const [hotels, setHotels] = useState([]);
+
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!searchParams || !searchParams.destination || !searchParams.checkInDate) {
-      console.error("Destination or check-in date is missing");
-      return;
+    if (!searchParams?.destination || !searchParams?.checkInDate || !searchParams?.checkOutDate) {
+      console.warn("検索条件が不足しています:", searchParams);
+      return; // 必要な情報がない場合は何もしない
     }
-
+  
     const fetchHotels = async () => {
       setLoading(true);
       setError(null);
-
+  
       try {
-        const apiKey = "http://jws.jalan.net/APIAdvance/HotelSearch/V1/";
-        const response = await fetch(
-          `https://jws.jalan.net/APICommon/HotelSearch/V1/?key=${apiKey}&s_area=${searchParams.destination}&checkin=${searchParams.checkInDate}&count=10&format=json`
-        );
-
+        const apiKey = "1099156325921818167";
+        const url = `https://app.rakuten.co.jp/services/api/Travel/HotelSearch/20170426?applicationId=${apiKey}&format=json&area=${searchParams.destination}&checkinDate=${searchParams.checkInDate}&checkoutDate=${searchParams.checkOutDate}&minCost=10000&maxCost=20000`;
+  
+        const response = await fetch(url);
         if (!response.ok) throw new Error("データの取得に失敗しました");
-
+  
         const data = await response.json();
+        console.log("APIレスポンス:", data);
         setHotels(data.hotels || []);
       } catch (err) {
         setError(err.message);
@@ -35,16 +37,19 @@ export default function HotelList() {
         setLoading(false);
       }
     };
-
+  
     fetchHotels();
-  }, [searchParams]); // searchParamsの変更をトリガーにしてAPI呼び出し
+  }, [searchParams]);
+  
 
   return (
     <div>
       <h2>宿泊施設リスト</h2>
       {loading && <p>検索中...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
-      {!loading && hotels.length === 0 && <p>検索結果がありません</p>}
+      {!loading && hotels === null && <p>検索結果を取得中...</p>}
+      {!loading && hotels !== null && hotels.length === 0 && <p>検索結果がありません</p>}
+
 
       <ul>
         {hotels.map((hotel, index) => (
