@@ -12,6 +12,9 @@ export default function SearchForm() {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    console.log('Destination:', destination);
+    console.log('Check-in Date:', checkInDate);
+
     const fetchDestinations = async () => {
       const apiKey = '1099156325921818167';
       const endpoint = 'https://app.rakuten.co.jp/services/api/Travel/Search/SimpleHotel/20170426';
@@ -37,16 +40,16 @@ export default function SearchForm() {
     };
 
     fetchDestinations();
-  }, []);
+  }, [destination, checkInDate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     if (!destination || !checkInDate || !checkOutDate) {
       setError('すべての検索条件を入力してください');
-      return;
+      return;  // 空の入力があれば送信を中止
     }
-
+  
     setSearchParams({ destination, checkInDate, checkOutDate });
   };
 
