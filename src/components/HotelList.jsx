@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
-const applicationId = "YOUR_APPLICATION_ID"; // 楽天APIのアプリIDを入れる
+const applicationId = "1099156325921818167"; // 楽天APIのアプリIDを入れる
 
 const HotelList = ({ areaCode }) => {
   const [hotels, setHotels] = useState([]);
