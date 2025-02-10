@@ -24,24 +24,27 @@ export default function SearchForm() {
       const params = new URLSearchParams({
         format: 'json',
         applicationId: apiKey,
-        keyword: '東京',
-        checkinDate: checkInDate,
-        checkoutDate: checkOutDate
+        keyword: '東京',  // 地名
+        checkinDate: '2025-02-25',
+        checkoutDate: '2025-02-28',
+        // minCost: 10000,
+        // maxCost: 20000
       });
+      
       
     
       try {
         const response = await fetch(`${endpoint}?${params}`);
         const data = await response.json();
         
-        if (response.ok) {
-          console.log('Response Data:', data);  // 成功した場合
+        if (!response.ok) {
+          console.error('Error response:', data);  // エラーメッセージを出力
+          alert('API error occurred, check console for details');
         } else {
-          console.error('API Error:', data);  // エラー内容を確認
+          console.log('Response Data:', data);  // 正常なレスポンスを出力
         }
       } catch (error) {
-        setError('データの取得に失敗しました。');
-        console.error('Error fetching destinations:', error);
+        console.error('Error fetching data:', error);
       }
     };    
 
