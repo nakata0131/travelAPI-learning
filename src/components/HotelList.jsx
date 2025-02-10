@@ -32,6 +32,15 @@ fetch(areaUrl)
   .then(response => response.json())
   .then(data => console.log(data))
   .catch(error => console.error(error));
+
+  const destinationMapping = {
+    tokyo: "東京都",
+    osaka: "大阪府",
+    kyoto: "京都府"
+  };
+  
+  const destinationCode = destinationMapping[searchParams.destination] || searchParams.destination;
+  console.log("Destination Code:", destinationCode);  
   
         const response = await fetch(url);
         if (!response.ok) throw new Error("データの取得に失敗しました");
