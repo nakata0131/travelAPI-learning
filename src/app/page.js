@@ -11,7 +11,7 @@ export default function Page() {
     <main>
       <h1>ホテル検索アプリ</h1>
       <SearchForm onSearch={setSearchParams} />
-      <HotelList searchParams={searchParams} />
+      {searchParams && <HotelList searchParams={searchParams} />}
     </main>
   );
 }

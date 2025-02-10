@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-const applicationId = "1099156325921818167";
+const applicationId = "1099156325921818167"; // 楽天APIキー
 
 export default function HotelList({ searchParams }) {
   const [hotels, setHotels] = useState([]);
@@ -10,25 +10,24 @@ export default function HotelList({ searchParams }) {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // 検索条件が揃っていない場合は処理しない
+    // 必要なパラメータが揃っていない場合は処理しない
     if (!searchParams || !searchParams.destination || !searchParams.checkInDate || !searchParams.checkOutDate) {
       console.warn("検索条件が不足しています:", searchParams);
       return;
     }
 
+    setLoading(true);
+    setError('');
+
     const fetchHotels = async () => {
-      setLoading(true);
-      setError("");
-    
       try {
-        const apiKey = "1099156325921818167"; // 楽天トラベルAPIのアプリケーションID
-        const url = `https://app.rakuten.co.jp/services/api/Travel/SimpleHotelSearch/20131024?applicationId=${apiKey}&format=json&keyword=${encodeURIComponent(searchParams.destination)}&checkinDate=${searchParams.checkInDate}&checkoutDate=${searchParams.checkOutDate}&page=1&hits=10`;
-        
+        // キーワード方式のエンドポイントを使用
+        const url = `https://app.rakuten.co.jp/services/api/Travel/SimpleHotelSearch/20131024?applicationId=${applicationId}&format=json&keyword=${encodeURIComponent(searchParams.destination)}&checkinDate=${searchParams.checkInDate}&checkoutDate=${searchParams.checkOutDate}&page=1&hits=10`;
         console.log("Fetching URL:", url);
         const response = await fetch(url);
         const data = await response.json();
         console.log("API Response:", data);
-    
+
         if (data.error) {
           setError(data.error_description || "不明なエラー");
         } else if (data.hotels) {
@@ -43,7 +42,6 @@ export default function HotelList({ searchParams }) {
         setLoading(false);
       }
     };
-    
 
     fetchHotels();
   }, [searchParams]);
@@ -56,7 +54,6 @@ export default function HotelList({ searchParams }) {
       {!loading && hotels.length === 0 && <p>検索結果がありません</p>}
       <ul>
         {hotels.map((hotel, index) => (
-          // レスポンスの構造に合わせて表示内容を調整してください。
           <li key={index}>
             <h3>{hotel.hotel[0].hotelBasicInfo.hotelName}</h3>
             <p>住所: {hotel.hotel[0].hotelBasicInfo.hotelInformationUrl}</p>
