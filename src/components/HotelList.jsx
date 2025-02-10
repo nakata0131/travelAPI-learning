@@ -1,6 +1,7 @@
+"use client";
 import { useState, useEffect } from "react";
 
-const applicationId = "YOUR_APPLICATION_ID"; // ここに楽天APIのアプリIDを入れる
+const applicationId = "YOUR_APPLICATION_ID"; // 楽天APIのアプリIDを入れる
 
 const HotelList = ({ areaCode }) => {
   const [hotels, setHotels] = useState([]);
@@ -8,7 +9,7 @@ const HotelList = ({ areaCode }) => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!areaCode) return; // エリアコードがない場合は処理しない
+    if (!areaCode) return; // エリアが未選択なら処理しない
     setLoading(true);
     setError("");
 
@@ -32,7 +33,7 @@ const HotelList = ({ areaCode }) => {
     };
 
     fetchHotels();
-  }, [areaCode]); // areaCodeが変わったら実行
+  }, [areaCode]); // areaCodeが変わるたびにデータ取得
 
   return (
     <div>
