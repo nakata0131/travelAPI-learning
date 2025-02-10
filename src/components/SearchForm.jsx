@@ -22,14 +22,13 @@ export default function SearchForm() {
       const apiKey = '1099156325921818167';  // 自分のAPIキー
       const endpoint = 'https://app.rakuten.co.jp/services/api/Travel/HotelSearch/20170426';
       const params = new URLSearchParams({
-        applicationId: apiKey,
         format: 'json',
-        keyword: '東京', // 検索したいキーワード
-        checkinDate: '2025-02-11', // チェックイン日
-        checkoutDate: '2025-02-12', // チェックアウト日
-        minCost: '10000', // 最低料金
-        maxCost: '20000', // 最高料金
-        destination: '東京', // 目的地を追加
+        applicationId: apiKey,
+        keyword: destination,  // ユーザーが入力した地名
+        checkinDate: checkInDate,  // 例: 2025-02-12
+        checkoutDate: checkOutDate,  // 例: 2025-02-13
+        minCost: 10000,  // 最低価格
+        maxCost: 20000,  // 最高価格
       });
     
       try {
@@ -57,7 +56,11 @@ export default function SearchForm() {
       setError('すべての検索条件を入力してください');
       return;  // 空の入力があれば送信を中止
     }
-  
+    console.log('destination:', destination);
+    console.log('checkInDate:', checkInDate);
+    console.log('checkOutDate:', checkOutDate);
+    
+    // ここでsetSearchParamsを呼び出してAPIリクエストに必要なパラメータをセット
     setSearchParams({ destination, checkInDate, checkOutDate });
   };
 
@@ -65,14 +68,14 @@ export default function SearchForm() {
     <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="destination">Destination:</label>
-        <input
-          id="destination"
-          type="text"
-          value={destination}
-          onChange={(e) => setDestination(e.target.value)}
-          required
-        />
-      </div>
+      <input
+        id="destination"
+        type="text"
+        value={destination}
+        onChange={(e) => setDestination(e.target.value)}
+        required
+      />
+</div>
       <div>
         <label htmlFor="checkInDate">Check-in Date:</label>
         <input
