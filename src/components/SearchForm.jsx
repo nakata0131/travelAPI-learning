@@ -65,23 +65,13 @@ export default function SearchForm() {
     <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="destination">Destination:</label>
-        <select
+        <input
           id="destination"
+          type="text"
           value={destination}
           onChange={(e) => setDestination(e.target.value)}
           required
-        >
-          <option value="">Select a destination</option>
-          {destinations.length > 0 ? (
-            destinations.map((dest, index) => (
-              <option key={index} value={dest.name}>
-                {dest.name}
-              </option>
-            ))
-          ) : (
-            <option value="">No destinations available</option>
-          )}
-        </select>
+        />
       </div>
       <div>
         <label htmlFor="checkInDate">Check-in Date:</label>
