@@ -3,7 +3,7 @@ import SearchForm from '../components/SearchForm';
 
 export default function Home() {
   return (
-    <div>
+    <div className="wrapper">
       <h1>ホテル検索アプリ</h1>
       <HotelList />
       <SearchForm />

@@ -8,8 +8,8 @@ export default function SearchForm() {
   const [destination, setDestination] = useState('');
   const [checkInDate, setCheckInDate] = useState('');
   const [checkOutDate, setCheckOutDate] = useState('');
-  const [destinations, setDestinations] = useState([]);  // 旅行先のリスト
-  const [error, setError] = useState(''); // エラーメッセージの管理
+  const [destinations, setDestinations] = useState([]);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchDestinations = async () => {
@@ -40,6 +40,17 @@ export default function SearchForm() {
     fetchDestinations();
   }, []);
 
+  // 追加する地名リスト
+  const additionalDestinations = [
+    { name: '大阪' },
+    { name: '京都' },
+    { name: '北海道' },
+    { name: '沖縄' },
+  ];
+
+  // 既存の地名と追加の地名を結合
+  const allDestinations = [...destinations, ...additionalDestinations];
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setSearchParams({ destination, checkInDate, checkOutDate });
@@ -56,8 +67,8 @@ export default function SearchForm() {
           required
         >
           <option value="">Select a destination</option>
-          {destinations.length > 0 ? (
-            destinations.map((dest, index) => (
+          {allDestinations.length > 0 ? (
+            allDestinations.map((dest, index) => (
               <option key={index} value={dest.name}>
                 {dest.name}
               </option>
@@ -67,6 +78,7 @@ export default function SearchForm() {
           )}
         </select>
       </div>
+
       <div>
         <label htmlFor="checkInDate">Check-in Date:</label>
         <input
@@ -77,6 +89,7 @@ export default function SearchForm() {
           required
         />
       </div>
+
       <div>
         <label htmlFor="checkOutDate">Check-out Date:</label>
         <input
@@ -87,6 +100,7 @@ export default function SearchForm() {
           required
         />
       </div>
+
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <button type="submit">Search</button>
     </form>
