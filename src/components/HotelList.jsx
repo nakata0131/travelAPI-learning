@@ -18,16 +18,17 @@ export default function HotelList({ searchParams }) {
 
     const fetchHotels = async () => {
       setLoading(true);
-      setError('');
-
+      setError("");
+    
       try {
-        // キーワード方式：destination の値をそのまま keyword に渡す
-        const url = `https://app.rakuten.co.jp/services/api/Travel/SimpleHotelSearch/20131024?applicationId=${applicationId}&format=json&keyword=${encodeURIComponent(searchParams.destination)}&checkinDate=${searchParams.checkInDate}&checkoutDate=${searchParams.checkOutDate}&page=1&hits=10`;
+        const apiKey = "1099156325921818167"; // 楽天トラベルAPIのアプリケーションID
+        const url = `https://app.rakuten.co.jp/services/api/Travel/HotelSearch/20170426?applicationId=${apiKey}&format=json&keyword=${encodeURIComponent(searchParams.destination)}&checkinDate=${searchParams.checkInDate}&checkoutDate=${searchParams.checkOutDate}&page=1&hits=10`;
+        
         console.log("Fetching URL:", url);
         const response = await fetch(url);
         const data = await response.json();
         console.log("API Response:", data);
-
+    
         if (data.error) {
           setError(data.error_description || "不明なエラー");
         } else if (data.hotels) {
@@ -42,6 +43,7 @@ export default function HotelList({ searchParams }) {
         setLoading(false);
       }
     };
+    
 
     fetchHotels();
   }, [searchParams]);
