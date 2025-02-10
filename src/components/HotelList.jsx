@@ -15,17 +15,23 @@ const HotelList = ({ areaCode }) => {
 
     const fetchHotels = async () => {
       try {
+        console.log("Fetching hotels for areaCode:", areaCode); // 追加
         const response = await fetch(
           `https://app.rakuten.co.jp/services/api/Travel/SimpleHotelSearch/20131024?applicationId=${applicationId}&largeClassCode=${areaCode}`
         );
         const data = await response.json();
+        console.log("API Response:", data); // 追加
 
-        if (data.hotels) {
+        if (data.error) {
+          console.error("API Error:", data.error);
+          setError(`APIエラー: ${data.error.description || "不明なエラー"}`);
+        } else if (data.hotels) {
           setHotels(data.hotels);
         } else {
           setError("ホテル情報が見つかりませんでした。");
         }
       } catch (err) {
+        console.error("Fetch Error:", err);
         setError("データの取得に失敗しました。");
       } finally {
         setLoading(false);
