@@ -22,7 +22,7 @@ export default function HotelList({ searchParams }) {
     
       try {
         const apiKey = "1099156325921818167"; // 楽天トラベルAPIのアプリケーションID
-        const url = `https://app.rakuten.co.jp/services/api/Travel/HotelSearch/20170426?applicationId=${apiKey}&format=json&keyword=${encodeURIComponent(searchParams.destination)}&checkinDate=${searchParams.checkInDate}&checkoutDate=${searchParams.checkOutDate}&page=1&hits=10`;
+        const url = `https://app.rakuten.co.jp/services/api/Travel/SimpleHotelSearch/20131024?applicationId=${apiKey}&format=json&keyword=${encodeURIComponent(searchParams.destination)}&checkinDate=${searchParams.checkInDate}&checkoutDate=${searchParams.checkOutDate}&page=1&hits=10`;
         
         console.log("Fetching URL:", url);
         const response = await fetch(url);
