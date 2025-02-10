@@ -23,7 +23,9 @@ export default function HotelList() {
   
       try {
         const apiKey = "1099156325921818167";
-        const url = `https://app.rakuten.co.jp/services/api/Travel/HotelSearch/20170426?applicationId=${apiKey}&format=json&area=${searchParams.destination}&checkinDate=${searchParams.checkInDate}&checkoutDate=${searchParams.checkOutDate}&minCost=10000&maxCost=20000`;
+        const url =
+`https://app.rakuten.co.jp/services/api/Travel/HotelSearch/20170426?applicationId=${apiKey}&format=json&largeClassCode=japan&middleClassCode=tokyo&checkinDate=${searchParams.checkInDate}&checkoutDate=${searchParams.checkOutDate}&minCost=10000&maxCost=20000`;
+
   
         const response = await fetch(url);
         if (!response.ok) throw new Error("データの取得に失敗しました");

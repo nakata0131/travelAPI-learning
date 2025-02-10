@@ -34,19 +34,20 @@ export default function SearchForm() {
       
     
       try {
-        const response = await fetch(`${endpoint}?${params}`);
+        const response = await fetch(url);
         const data = await response.json();
-        
+      
         if (!response.ok) {
-          console.error('Error response:', data);  // エラーメッセージを出力
-          alert('API error occurred, check console for details');
-        } else {
-          console.log('Response Data:', data);  // 正常なレスポンスを出力
+          console.error("エラー詳細:", data);
+          throw new Error(data.error_description || "データの取得に失敗しました");
         }
-      } catch (error) {
-        console.error('Error fetching data:', error);
+      
+        console.log("APIレスポンス:", data);
+        setHotels(data.hotels || []);
+      } catch (err) {
+        setError(err.message);
       }
-    };    
+    };      
 
     fetchDestinations();
   }, [destination, checkInDate]);
