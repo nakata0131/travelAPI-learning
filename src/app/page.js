@@ -1,16 +1,17 @@
-"use client";
-import { useState } from "react";
-import SearchForm from "@/components/SearchForm";
-import HotelList from "@/components/HotelList";
+'use client';
+
+import { useState } from 'react';
+import SearchForm from '@/components/SearchForm';
+import HotelList from '@/components/HotelList';
 
 export default function Page() {
-  const [areaCode, setAreaCode] = useState("");
+  const [searchParams, setSearchParams] = useState(null);
 
   return (
     <main>
-      <h1>宿泊施設検索</h1>
-      <SearchForm onSearch={setAreaCode} />
-      <HotelList areaCode={areaCode} />
+      <h1>ホテル検索アプリ</h1>
+      <SearchForm onSearch={setSearchParams} />
+      <HotelList searchParams={searchParams} />
     </main>
   );
 }

@@ -1,64 +1,68 @@
-"use client";
-import { useState, useEffect } from "react";
+'use client';
 
-const applicationId = "1099156325921818167"; // 楽天APIのアプリIDを入れる
+import { useState, useEffect } from 'react';
 
-const HotelList = ({ areaCode }) => {
+const applicationId = "1099156325921818167";
+
+export default function HotelList({ searchParams }) {
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!areaCode) return; // エリアが未選択なら処理しない
-    setLoading(true);
-    setError("");
+    // 検索条件が揃っていない場合は処理しない
+    if (!searchParams || !searchParams.destination || !searchParams.checkInDate || !searchParams.checkOutDate) {
+      console.warn("検索条件が不足しています:", searchParams);
+      return;
+    }
 
     const fetchHotels = async () => {
+      setLoading(true);
+      setError('');
+
       try {
-        console.log("Fetching hotels for areaCode:", areaCode);
-    
-        // 必要なパラメータを追加
-        const url = `https://app.rakuten.co.jp/services/api/Travel/SimpleHotelSearch/20131024?format=json&applicationId=${applicationId}&largeClassCode=13&middleClassCode=${areaCode}&page=1&hits=10`;
-        
-        console.log("Fetching URL:", url); // 確認用ログ
-    
+        // キーワード方式：destination の値をそのまま keyword に渡す
+        const url = `https://app.rakuten.co.jp/services/api/Travel/SimpleHotelSearch/20131024?applicationId=${applicationId}&format=json&keyword=${encodeURIComponent(searchParams.destination)}&checkinDate=${searchParams.checkInDate}&checkoutDate=${searchParams.checkOutDate}&page=1&hits=10`;
+        console.log("Fetching URL:", url);
         const response = await fetch(url);
         const data = await response.json();
-        console.log("API Response:", data); // 確認用ログ
-    
+        console.log("API Response:", data);
+
         if (data.error) {
-          console.error("API Error:", data.error);
-          setError(`APIエラー: ${data.error_description || "不明なエラー"}`);
+          setError(data.error_description || "不明なエラー");
         } else if (data.hotels) {
           setHotels(data.hotels);
         } else {
           setError("ホテル情報が見つかりませんでした。");
         }
       } catch (err) {
-        console.error("Fetch Error:", err);
         setError("データの取得に失敗しました。");
+        console.error("Fetch Error:", err);
       } finally {
         setLoading(false);
       }
     };
-    
 
     fetchHotels();
-  }, [areaCode]); // areaCodeが変わるたびにデータ取得
+  }, [searchParams]);
 
   return (
     <div>
-      <h2>宿泊施設一覧</h2>
+      <h2>宿泊施設リスト</h2>
+      {loading && <p>検索中...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
-      {loading ? <p>ロード中...</p> : (
-        <ul>
-          {hotels.map((hotel, index) => (
-            <li key={index}>{hotel.hotel[0].hotelBasicInfo.hotelName}</li>
-          ))}
-        </ul>
-      )}
+      {!loading && hotels.length === 0 && <p>検索結果がありません</p>}
+      <ul>
+        {hotels.map((hotel, index) => (
+          // レスポンスの構造に合わせて表示内容を調整してください。
+          <li key={index}>
+            <h3>{hotel.hotel[0].hotelBasicInfo.hotelName}</h3>
+            <p>住所: {hotel.hotel[0].hotelBasicInfo.hotelInformationUrl}</p>
+            <p>料金: {hotel.hotel[0].hotelBasicInfo.hotelMinCharge}円〜</p>
+            <a href={`/hotel/${hotel.hotel[0].hotelBasicInfo.hotelNo}`}>詳細を見る</a>
+          </li>
+        ))}
+      </ul>
     </div>
   );
-};
-
-export default HotelList;
+}

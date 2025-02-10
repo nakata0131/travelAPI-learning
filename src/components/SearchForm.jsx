@@ -1,28 +1,58 @@
-"use client";
-import { useState } from "react";
+'use client';
 
-const SearchForm = ({ onSearch }) => {
-  const [areaCode, setAreaCode] = useState("");
+import { useState } from 'react';
+
+export default function SearchForm({ onSearch }) {
+  const [destination, setDestination] = useState('');
+  const [checkInDate, setCheckInDate] = useState('');
+  const [checkOutDate, setCheckOutDate] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (areaCode) {
-      onSearch(areaCode);
+    if (!destination || !checkInDate || !checkOutDate) {
+      setError('すべての検索条件を入力してください');
+      return;
     }
+    // 入力された値を上位コンポーネントに渡す
+    onSearch({ destination, checkInDate, checkOutDate });
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <label>エリアを選択:</label>
-      <select value={areaCode} onChange={(e) => setAreaCode(e.target.value)}>
-        <option value="">選択してください</option>
-        <option value="130000">東京</option>
-        <option value="270000">大阪</option>
-        <option value="010000">北海道</option>
-      </select>
-      <button type="submit">検索</button>
+      <div>
+        <label htmlFor="destination">Destination:</label>
+        <input
+          type="text"
+          id="destination"
+          placeholder="例: 東京"
+          value={destination}
+          onChange={(e) => setDestination(e.target.value)}
+          required
+        />
+      </div>
+      <div>
+        <label htmlFor="checkInDate">Check-in Date:</label>
+        <input
+          type="date"
+          id="checkInDate"
+          value={checkInDate}
+          onChange={(e) => setCheckInDate(e.target.value)}
+          required
+        />
+      </div>
+      <div>
+        <label htmlFor="checkOutDate">Check-out Date:</label>
+        <input
+          type="date"
+          id="checkOutDate"
+          value={checkOutDate}
+          onChange={(e) => setCheckOutDate(e.target.value)}
+          required
+        />
+      </div>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <button type="submit">Search</button>
     </form>
   );
-};
-
-export default SearchForm;
+}
