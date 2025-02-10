@@ -16,20 +16,23 @@ export default function SearchForm() {
     console.log('Check-in Date:', checkInDate);
 
     const fetchDestinations = async () => {
-      const apiKey = '1099156325921818167';
-      const endpoint = 'https://app.rakuten.co.jp/services/api/Travel/Search/SimpleHotel/20170426';
+      const apiKey = '1099156325921818167'; // 実際のAPIキーを使用
+      const endpoint = 'https://app.rakuten.co.jp/services/api/Travel/HotelSearch/20170426';
       const params = new URLSearchParams({
-        format: 'json',
         applicationId: apiKey,
-        keyword: destination,
+        format: 'json',
+        keyword: '東京',  // 検索したいキーワード（例: '東京'）
+        checkinDate: '2025-02-11', // 日付は正しい形式に
+        checkoutDate: '2025-02-12', // 同様に
+        minCost: '10000',
+        maxCost: '20000',
       });
-
+    
       try {
         const response = await fetch(`${endpoint}?${params}`);
         const data = await response.json();
-
         if (data.items) {
-          setDestinations(data.items);
+          setDestinations(data.items); // データがあれば表示
         } else {
           setDestinations([]);
         }
@@ -38,6 +41,7 @@ export default function SearchForm() {
         console.error('Error fetching destinations:', error);
       }
     };
+    
 
     fetchDestinations();
   }, [destination, checkInDate]);
