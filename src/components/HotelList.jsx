@@ -1,87 +1,52 @@
-"use client";
-
 import { useState, useEffect } from "react";
-import { useAppContext } from "../context/App.context";
 
-export default function HotelList() {
-  const { searchParams } = useAppContext();
+const applicationId = "YOUR_APPLICATION_ID"; // ここに楽天APIのアプリIDを入れる
+
+const HotelList = ({ areaCode }) => {
   const [hotels, setHotels] = useState([]);
-
-
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!searchParams?.destination || !searchParams?.checkInDate || !searchParams?.checkOutDate) {
-      console.warn("検索条件が不足しています:", searchParams);
-      return; // 必要な情報がない場合は何もしない
-    }
-  
+    if (!areaCode) return; // エリアコードがない場合は処理しない
+    setLoading(true);
+    setError("");
+
     const fetchHotels = async () => {
-      setLoading(true);
-      setError(null);
-  
       try {
-        const apiKey = "1099156325921818167";
-        const url = `https://app.rakuten.co.jp/services/api/Travel/HotelSearch/20170426?applicationId=${apiKey}&format=json&area=${searchParams.destination}&checkinDate=${searchParams.checkInDate}&checkoutDate=${searchParams.checkOutDate}&minCost=10000&maxCost=20000`;
-
-
-        const areaUrl = `https://app.rakuten.co.jp/services/api/Travel/GetAreaClass/20131024?format=json&applicationId=${apiKey}`;
-
-fetch(areaUrl)
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error(error));
-
-  const destinationMapping = {
-    tokyo: "東京都",
-    osaka: "大阪府",
-    kyoto: "京都府"
-  };
-  
-  const destinationCode = destinationMapping[searchParams.destination] || searchParams.destination;
-  console.log("Destination Code:", destinationCode);  
-  
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("データの取得に失敗しました");
-  
+        const response = await fetch(
+          `https://app.rakuten.co.jp/services/api/Travel/SimpleHotelSearch/20131024?applicationId=${applicationId}&largeClassCode=${areaCode}`
+        );
         const data = await response.json();
-        console.log("APIレスポンス:", data);
-        setHotels(data.hotels || []);
+
+        if (data.hotels) {
+          setHotels(data.hotels);
+        } else {
+          setError("ホテル情報が見つかりませんでした。");
+        }
       } catch (err) {
-        setError(err.message);
+        setError("データの取得に失敗しました。");
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchHotels();
-  }, [searchParams]);
-  
+  }, [areaCode]); // areaCodeが変わったら実行
 
   return (
     <div>
-      <h2>宿泊施設リスト</h2>
-      {loading && <p>検索中...</p>}
+      <h2>宿泊施設一覧</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
-      {!loading && hotels === null && <p>検索結果を取得中...</p>}
-      {!loading && hotels !== null && hotels.length === 0 && <p>検索結果がありません</p>}
-
-
-      <ul>
-        {hotels.map((hotel, index) => (
-          <li key={index}>
-            <h3>{hotel.hotelName}</h3>
-            <p>住所: {hotel.address1} {hotel.address2}</p>
-            <p>料金: {hotel.sampleRate}円〜</p>
-            <img src={hotel.hotelImageUrl} alt={hotel.hotelName} width="150" />
-            <p>
-              <a href={`/hotel/${hotel.hotelNo}`}>詳細を見る</a> 
-            </p>
-            <button>⭐ お気に入り追加</button>
-          </li>
-        ))}
-      </ul>
+      {loading ? <p>ロード中...</p> : (
+        <ul>
+          {hotels.map((hotel, index) => (
+            <li key={index}>{hotel.hotel[0].hotelBasicInfo.hotelName}</li>
+          ))}
+        </ul>
+      )}
     </div>
   );
-}
+};
+
+export default HotelList;

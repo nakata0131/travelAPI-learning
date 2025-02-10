@@ -1,12 +1,17 @@
-import HotelList from "../components/HotelList";
-import SearchForm from '../components/SearchForm';
+import { useState } from "react";
+import SearchForm from "./SearchForm";
+import HotelList from "./HotelList";
 
-export default function Home() {
+const App = () => {
+  const [areaCode, setAreaCode] = useState("");
+
   return (
-    <div className="wrapper">
-      <h1>ホテル検索アプリ</h1>
-      <HotelList />
-      <SearchForm />
+    <div>
+      <h1>宿泊施設検索</h1>
+      <SearchForm onSearch={setAreaCode} />
+      <HotelList areaCode={areaCode} />
     </div>
   );
-}
+};
+
+export default App;

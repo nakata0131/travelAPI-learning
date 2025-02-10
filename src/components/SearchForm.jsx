@@ -1,106 +1,27 @@
-'use client';
+import { useState } from "react";
 
-import { useEffect, useState } from 'react';
-import { useAppContext } from '../context/App.context';
-
-export default function SearchForm() {
-  const { setSearchParams } = useAppContext();
-  const [destination, setDestination] = useState('');
-  const [checkInDate, setCheckInDate] = useState('');
-  const [checkOutDate, setCheckOutDate] = useState('');
-  const [destinations, setDestinations] = useState([]);
-  const [error, setError] = useState('');
-
-
-  
-
-  useEffect(() => {
-    console.log('Destination:', destination);
-    console.log('Check-in Date:', checkInDate);
-
-    const fetchDestinations = async () => {
-      const apiKey = '1099156325921818167';
-      const endpoint = 'https://app.rakuten.co.jp/services/api/Travel/HotelSearch/20170426';
-      const params = new URLSearchParams({
-        format: 'json',
-        applicationId: apiKey,
-        keyword: '東京',  // 地名
-        checkinDate: '2025-02-25',
-        checkoutDate: '2025-02-28',
-        // minCost: 10000,
-        // maxCost: 20000
-      });
-      
-      
-    
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-      
-        if (!response.ok) {
-          console.error("エラー詳細:", data);
-          throw new Error(data.error_description || "データの取得に失敗しました");
-        }
-      
-        console.log("APIレスポンス:", data);
-        setHotels(data.hotels || []);
-      } catch (err) {
-        setError(err.message);
-      }
-    };      
-
-    fetchDestinations();
-  }, [destination, checkInDate]);
+const SearchForm = ({ onSearch }) => {
+  const [areaCode, setAreaCode] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
-    if (!destination || !checkInDate || !checkOutDate) {
-      setError('すべての検索条件を入力してください');
-      return;  // 空の入力があれば送信を中止
+    if (areaCode) {
+      onSearch(areaCode);
     }
-    console.log('destination:', destination);
-    console.log('checkInDate:', checkInDate);
-    console.log('checkOutDate:', checkOutDate);
-    
-    // ここでsetSearchParamsを呼び出してAPIリクエストに必要なパラメータをセット
-    setSearchParams({ destination, checkInDate, checkOutDate });
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="destination">Destination:</label>
-      <input
-        id="destination"
-        type="text"
-        value={destination}
-        onChange={(e) => setDestination(e.target.value)}
-        required
-      />
-</div>
-      <div>
-        <label htmlFor="checkInDate">Check-in Date:</label>
-        <input
-          type="date"
-          id="checkInDate"
-          value={checkInDate}
-          onChange={(e) => setCheckInDate(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="checkOutDate">Check-out Date:</label>
-        <input
-          type="date"
-          id="checkOutDate"
-          value={checkOutDate}
-          onChange={(e) => setCheckOutDate(e.target.value)}
-          required
-        />
-      </div>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <button type="submit">Search</button>
+      <label>エリアを選択:</label>
+      <select value={areaCode} onChange={(e) => setAreaCode(e.target.value)}>
+        <option value="">選択してください</option>
+        <option value="130000">東京</option>
+        <option value="270000">大阪</option>
+        <option value="010000">北海道</option>
+      </select>
+      <button type="submit">検索</button>
     </form>
   );
-}
+};
+
+export default SearchForm;
