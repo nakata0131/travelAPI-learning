@@ -1,28 +1,90 @@
-// pages/index.jsx
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FilterForm from "../components/FilterForm";
 
 const IndexPage = () => {
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [areaData, setAreaData] = useState({});
 
-  const fetchHotels = async ({ area, minPrice, maxPrice }) => {
-    setLoading(true);
-    const url = `https://app.rakuten.co.jp/services/api/Travel/SimpleHotelSearch/20170426?applicationId=1099156325921818167&format=json&middleClassCode=${area}&minCharge=${minPrice}&maxCharge=${maxPrice}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    setHotels(data.Hotels || []);
-    setLoading(false);
+  const fetchAreaCode = async (prefecture, city) => {
+    try {
+      const response = await fetch('/areaData.json'); // ローカル or APIからデータ取得
+      const areaData = await response.json();
+  
+      console.log("取得したエリアデータ:", areaData); // 確認
+  
+      if (!(prefecture in areaData)) {
+        console.error("該当する都道府県が見つかりません:", prefecture);
+        return null;
+      }
+  
+      // 都道府県のローマ字コード取得
+      const middleClassCode = areaData[prefecture].code;
+  
+      // 市町村のローマ字コード取得（指定なしなら都道府県コードのみ）
+      let smallClassCode = null;
+      if (city && areaData[prefecture].cities[city]) {
+        smallClassCode = areaData[prefecture].cities[city];
+      }
+  
+      return { middleClassCode, smallClassCode };
+    } catch (error) {
+      console.error("エリアコード取得エラー:", error);
+      return null;
+    }
   };
+  
+  
+
+  // JSONファイルをフェッチしてデータを取得する関数
+  const fetchAreaData = async () => {
+    const response = await fetch('/areaData.json') // パスを修正して正しい場所にファイルを配置
+    const data = await response.json();
+    setAreaData(data); // データをstateにセット
+  };
+
+  useEffect(() => {
+    fetchAreaData();
+  }, []);
+
+  const fetchHotels = async (prefecture, city) => {
+    try {
+      const areaCodes = await fetchAreaCode(prefecture, city);
+      if (!areaCodes) return;
+  
+      const { middleClassCode, smallClassCode } = areaCodes;
+      const apiUrl = `https://app.rakuten.co.jp/services/api/Travel/SimpleHotelSearch/20170426?applicationId=1099156325921818167&format=json&largeClassCode=japan&middleClassCode=${middleClassCode}${smallClassCode ? `&smallClassCode=${smallClassCode}` : ''}`;
+  
+      console.log("リクエストURL:", apiUrl); // 確認用
+  
+      const response = await fetch(apiUrl);
+      const hotelData = await response.json();
+  
+      console.log("取得したホテル情報:", hotelData);
+      return hotelData;
+// 取得したデータを `setHotels` に保存（抜けていた）
+setHotels(hotelData.hotels || []);
+
+    } catch (error) {
+      console.error("ホテル情報の取得に失敗:", error);
+      return null;
+    }
+  };
+  
+
+  
 
   return (
     <div>
       <h1>ホテル検索</h1>
-      
-      <FilterForm onSubmit={fetchHotels} />
-      
+
+      <FilterForm 
+        areaData={areaData} // areaDataをFilterFormに渡す
+        onSubmit={fetchHotels} 
+      />
+
       {loading ? (
         <p>Loading...</p>
       ) : (

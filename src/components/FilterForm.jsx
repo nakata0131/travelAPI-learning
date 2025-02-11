@@ -1,27 +1,24 @@
-// components/FilterForm.jsx
-
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const FilterForm = ({ onSubmit }) => {
-  // 県名（middleClassCode）の選択肢
-  const areaOptions = [
-    { label: "徳島県", value: "tokushima" },
-    { label: "香川県", value: "kagawa" },
-    { label: "愛媛県", value: "ehime" },
-    { label: "高知県", value: "kochi" },
-  ];
-
-  // フォームの状態
+const FilterForm = ({ onSubmit, areaData }) => {
   const [selectedArea, setSelectedArea] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+
+  // 県選択時に市町村を更新する
+  const handleAreaChange = (e) => {
+    setSelectedArea(e.target.value);
+    setSelectedCity(""); // 県が変更されたら市町村もリセット
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit({
       area: selectedArea,
+      city: selectedCity, // 市町村も渡す
       minPrice,
       maxPrice,
     });
@@ -31,16 +28,30 @@ const FilterForm = ({ onSubmit }) => {
     <form onSubmit={handleSubmit}>
       <div>
         <label>県名:</label>
-        <select
-          value={selectedArea}
-          onChange={(e) => setSelectedArea(e.target.value)}
-        >
+        <select value={selectedArea} onChange={handleAreaChange}>
           <option value="">選択してください</option>
-          {areaOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
+          {Object.keys(areaData).map((prefecture) => (
+            <option key={prefecture} value={prefecture}>
+              {prefecture}
             </option>
           ))}
+        </select>
+      </div>
+
+      <div>
+        <label>市町村:</label>
+        <select
+          value={selectedCity}
+          onChange={(e) => setSelectedCity(e.target.value)}
+          disabled={!selectedArea}
+        >
+          <option value="">選択してください</option>
+          {selectedArea &&
+            areaData[selectedArea].map((city, index) => (
+              <option key={index} value={city}>
+                {city}
+              </option>
+            ))}
         </select>
       </div>
 
