@@ -14,13 +14,11 @@ export default function HotelList({ searchParams }) {
       console.warn("検索条件が不足しています:", searchParams);
       return;
     }
-
     setLoading(true);
     setError('');
 
     const fetchHotels = async () => {
       try {
-        // エリアコード方式のリクエスト例
         const url = `https://app.rakuten.co.jp/services/api/Travel/SimpleHotelSearch/20131024?applicationId=${applicationId}&format=json&largeClassCode=130000&middleClassCode=${searchParams.destination}&checkinDate=${searchParams.checkInDate}&checkoutDate=${searchParams.checkOutDate}&page=1&hits=10`;
         console.log("Fetching URL:", url);
         const response = await fetch(url);
