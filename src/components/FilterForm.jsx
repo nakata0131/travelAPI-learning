@@ -7,6 +7,7 @@ const FilterForm = ({ onSubmit, areaData }) => {
   const [selectedCity, setSelectedCity] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+  const [loading, setLoading] = useState(false); // 追加
 
   // 県選択時に市町村を更新する
   const handleAreaChange = (e) => {
@@ -17,11 +18,9 @@ const FilterForm = ({ onSubmit, areaData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await onSubmit(selectedArea, selectedCity); // `onSubmit` を直接呼び出す
+    await onSubmit(selectedArea, selectedCity);
     setLoading(false);
   };
-  
-  
 
   return (
     <form onSubmit={handleSubmit}>
@@ -47,11 +46,10 @@ const FilterForm = ({ onSubmit, areaData }) => {
           <option value="">選択してください</option>
           {selectedArea &&
             Object.keys(areaData[selectedArea].cities).map((city, index) => (
-          <option key={index} value={city}>
-            {city}
-          </option>
-  ))}
-
+              <option key={index} value={city}>
+                {city}
+              </option>
+            ))}
         </select>
       </div>
 
@@ -75,7 +73,9 @@ const FilterForm = ({ onSubmit, areaData }) => {
         />
       </div>
 
-      <button type="submit">検索</button>
+      <button type="submit" disabled={loading}>
+        {loading ? "検索中..." : "検索"}
+      </button>
     </form>
   );
 };
