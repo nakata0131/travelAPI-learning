@@ -1,10 +1,9 @@
-// /src/app/hotel-detail/page.jsx
 'use client';
 
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
-const applicationId = "1099156325921818167"; // 楽天APIのアプリID
+const API_KEY = "1099156325921818167";
 
 export default function HotelDetailPage() {
   const { id } = useParams();
@@ -17,8 +16,8 @@ export default function HotelDetailPage() {
     setLoading(true);
     const fetchHotelDetail = async () => {
       try {
-        // 例：ホテル番号で検索する場合
-        const url = `https://app.rakuten.co.jp/services/api/Travel/SimpleHotelSearch/20131024?applicationId=${applicationId}&format=json&hotelNo=${id}`;
+        const url = `https://app.rakuten.co.jp/services/api/Travel/SimpleHotelSearch/20131024?applicationId=${API_KEY}&format=json&hotelNo=${id}&hits=1`;
+        console.log("Detail Fetch URL:", url);
         const response = await fetch(url);
         const data = await response.json();
         if (data.error) {
@@ -30,6 +29,7 @@ export default function HotelDetailPage() {
         }
       } catch (err) {
         setError("データの取得に失敗しました。");
+        console.error("Detail Fetch Error:", err);
       } finally {
         setLoading(false);
       }
@@ -38,7 +38,7 @@ export default function HotelDetailPage() {
   }, [id]);
 
   if (loading) return <p>ロード中...</p>;
-  if (error) return <p style={{ color: 'red' }}>{error}</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
   if (!hotel) return <p>ホテル情報がありません</p>;
 
   return (
@@ -46,7 +46,7 @@ export default function HotelDetailPage() {
       <h1 className="text-2xl font-bold">{hotel.hotel[0].hotelBasicInfo.hotelName}</h1>
       <p>住所: {hotel.hotel[0].hotelBasicInfo.hotelInformationUrl}</p>
       <p>料金: {hotel.hotel[0].hotelBasicInfo.hotelMinCharge}円〜</p>
-      {/* 詳細情報など追加可能 */}
+      {/* その他の詳細情報 */}
     </div>
   );
 }

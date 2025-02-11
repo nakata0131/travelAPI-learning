@@ -2,75 +2,91 @@
 
 import { useState } from 'react';
 
+// 例として、関東主要県のエリア（※エリアコードは例です）
 const areaOptions = [
-  { areaCode: '130', areaName: '東京都' },
-  { areaCode: '140', areaName: '神奈川県' },
-  { areaCode: '150', areaName: '埼玉県' },
-  { areaCode: '160', areaName: '千葉県' },
-  { areaCode: '100', areaName: '茨城県' },
-  { areaCode: '110', areaName: '栃木県' },
-  { areaCode: '120', areaName: '群馬県' }
+  { areaCode: '130010', areaName: '東京都' },
+  { areaCode: '140010', areaName: '神奈川県' },
+  { areaCode: '150010', areaName: '埼玉県' },
+  { areaCode: '160010', areaName: '千葉県' }
 ];
 
-const API_KEY = '1099156325921818167';
+// 有名ホテルの選択肢（施設コード：hotelNo）は、実際の楽天トラベルAPIのコードを使う必要があります。
+// ここでは例として仮の値を使用しています。
+const hotelOptions = [
+  { hotelNo: '1001', hotelName: 'ルートイン' },
+  { hotelNo: '1002', hotelName: 'ニューオータニ' },
+  { hotelNo: '1003', hotelName: 'アパホテル' },
+  { hotelNo: '1004', hotelName: 'ホテルオークラ' }
+];
 
-const fetchHotelData = async (areaCode) => {
-  const url = `https://app.rakuten.co.jp/services/api/Travel/HotelSearch/20170426?format=json&applicationId=${API_KEY}&areaCode=${areaCode}&hits=5`;
+export default function HotelSearch({ onSearch }) {
+  // 各入力値の状態管理
+  const [selectedArea, setSelectedArea] = useState('');
+  const [selectedHotelNo, setSelectedHotelNo] = useState('');
 
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    return data.hotels || [];
-  } catch (error) {
-    console.error('APIリクエストエラー:', error);
-    return [];
-  }
-};
-
-export default function HotelSearch() {
-  const [areaCode, setAreaCode] = useState('');
-  const [hotelList, setHotelList] = useState([]);
-
-  // 検索ボタンを押した際の処理
-  const handleSearch = async () => {
-    if (!areaCode) {
-      console.warn('エリアを選択してください');
+  const handleSearch = (e) => {
+    e.preventDefault();
+    // 必須チェック
+    if (!selectedArea || !selectedHotelNo) {
+      alert('エリアとホテルを選択してください');
       return;
     }
-
-    // APIからデータを取得
-    const hotels = await fetchHotelData(areaCode);
-    setHotelList(hotels);
+    // 検索条件を上位コンポーネントへ渡す
+    // ※ここでは、楽天APIで施設検索に必要なパラメータとして「hotelNo」を使用します。
+    onSearch({
+      areaCode: selectedArea, // エリアは参考用。実際のリクエストでは「largeClassCode」と「middleClassCode」を使う場合もあります。
+      hotelNo: selectedHotelNo
+    });
   };
 
   return (
-    <div>
-      {/* エリアコード選択 */}
-      <select value={areaCode} onChange={(e) => setAreaCode(e.target.value)} required>
-        <option value="">エリアを選択</option>
-        {areaOptions.map((area) => (
-          <option key={area.areaCode} value={area.areaCode}>
-            {area.areaName}
-          </option>
-        ))}
-      </select>
+    <form onSubmit={handleSearch} className="p-4 border rounded-md">
+      <div className="mb-4">
+        <label htmlFor="areaSelect" className="block font-medium">
+          エリアを選択:
+        </label>
+        <select
+          id="areaSelect"
+          value={selectedArea}
+          onChange={(e) => setSelectedArea(e.target.value)}
+          required
+          className="w-full p-2 border rounded"
+        >
+          <option value="">エリアを選択</option>
+          {areaOptions.map((area) => (
+            <option key={area.areaCode} value={area.areaCode}>
+              {area.areaName}
+            </option>
+          ))}
+        </select>
+      </div>
 
-      <button onClick={handleSearch}>検索</button>
+      <div className="mb-4">
+        <label htmlFor="hotelSelect" className="block font-medium">
+          ホテルを選択:
+        </label>
+        <select
+          id="hotelSelect"
+          value={selectedHotelNo}
+          onChange={(e) => setSelectedHotelNo(e.target.value)}
+          required
+          className="w-full p-2 border rounded"
+        >
+          <option value="">ホテルを選択</option>
+          {hotelOptions.map((hotel) => (
+            <option key={hotel.hotelNo} value={hotel.hotelNo}>
+              {hotel.hotelName}
+            </option>
+          ))}
+        </select>
+      </div>
 
-      {/* 検索結果表示 */}
-      {hotelList.length > 0 && (
-        <div>
-          <h2>検索結果:</h2>
-          <ul>
-            {hotelList.map((hotel, index) => (
-              <li key={index}>
-                <h3>{hotel.hotelName}</h3>
-                <p>{hotel.hotelInfo}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+      <button
+        type="submit"
+        className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+      >
+        検索する
+      </button>
+    </form>
   );
 }
