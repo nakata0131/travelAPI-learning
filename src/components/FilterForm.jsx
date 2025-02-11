@@ -14,15 +14,14 @@ const FilterForm = ({ onSubmit, areaData }) => {
     setSelectedCity(""); // 県が変更されたら市町村もリセット
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit({
-      area: selectedArea,
-      city: selectedCity, // 市町村も渡す
-      minPrice,
-      maxPrice,
-    });
+    setLoading(true);
+    await onSubmit(selectedArea, selectedCity); // `onSubmit` を直接呼び出す
+    setLoading(false);
   };
+  
+  
 
   return (
     <form onSubmit={handleSubmit}>
@@ -47,11 +46,12 @@ const FilterForm = ({ onSubmit, areaData }) => {
         >
           <option value="">選択してください</option>
           {selectedArea &&
-            areaData[selectedArea].map((city, index) => (
-              <option key={index} value={city}>
-                {city}
-              </option>
-            ))}
+            Object.keys(areaData[selectedArea].cities).map((city, index) => (
+          <option key={index} value={city}>
+            {city}
+          </option>
+  ))}
+
         </select>
       </div>
 
