@@ -2,52 +2,75 @@
 
 import { useState } from 'react';
 
-export default function HotelSearch({ onSearch }) {
-  // 入力状態を管理するための useState
-  const [areaCode, setAreaCode] = useState('');
-  const [hotelName, setHotelName] = useState('');
+const areaOptions = [
+  { areaCode: '130', areaName: '東京都' },
+  { areaCode: '140', areaName: '神奈川県' },
+  { areaCode: '150', areaName: '埼玉県' },
+  { areaCode: '160', areaName: '千葉県' },
+  { areaCode: '100', areaName: '茨城県' },
+  { areaCode: '110', areaName: '栃木県' },
+  { areaCode: '120', areaName: '群馬県' }
+];
 
-  // 検索ボタンが押されたときの処理
-  const handleSearch = () => {
-    // 必須パラメータのバリデーション
-    if (!areaCode && !hotelName) {
-      alert('エリアコードまたはホテル名を入力してください');
+const API_KEY = '1099156325921818167';
+
+const fetchHotelData = async (areaCode) => {
+  const url = `https://app.rakuten.co.jp/services/api/Travel/HotelSearch/20170426?format=json&applicationId=${API_KEY}&areaCode=${areaCode}&hits=5`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data.hotels || [];
+  } catch (error) {
+    console.error('APIリクエストエラー:', error);
+    return [];
+  }
+};
+
+export default function HotelSearch() {
+  const [areaCode, setAreaCode] = useState('');
+  const [hotelList, setHotelList] = useState([]);
+
+  // 検索ボタンを押した際の処理
+  const handleSearch = async () => {
+    if (!areaCode) {
+      console.warn('エリアを選択してください');
       return;
     }
 
-    // 検索パラメータを設定
-    onSearch({ areaCode, hotelName });
+    // APIからデータを取得
+    const hotels = await fetchHotelData(areaCode);
+    setHotelList(hotels);
   };
 
   return (
-    <div className="p-4 bg-white shadow-md rounded-md">
-      <label className="block text-sm font-medium text-gray-700">エリアコード</label>
-      <select
-        className="w-full p-2 border rounded-md mb-4"
-        value={areaCode}
-        onChange={(e) => setAreaCode(e.target.value)}
-      >
+    <div>
+      {/* エリアコード選択 */}
+      <select value={areaCode} onChange={(e) => setAreaCode(e.target.value)} required>
         <option value="">エリアを選択</option>
-        <option value="130">東京都</option>
-        <option value="270">大阪府</option>
-        <option value="010">北海道</option>
+        {areaOptions.map((area) => (
+          <option key={area.areaCode} value={area.areaCode}>
+            {area.areaName}
+          </option>
+        ))}
       </select>
 
-      <label className="block text-sm font-medium text-gray-700">ホテル名</label>
-      <input
-        type="text"
-        className="w-full p-2 border rounded-md mb-4"
-        placeholder="ホテル名を入力"
-        value={hotelName}
-        onChange={(e) => setHotelName(e.target.value)}
-      />
+      <button onClick={handleSearch}>検索</button>
 
-      <button
-        className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
-        onClick={handleSearch}
-      >
-        検索
-      </button>
+      {/* 検索結果表示 */}
+      {hotelList.length > 0 && (
+        <div>
+          <h2>検索結果:</h2>
+          <ul>
+            {hotelList.map((hotel, index) => (
+              <li key={index}>
+                <h3>{hotel.hotelName}</h3>
+                <p>{hotel.hotelInfo}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
