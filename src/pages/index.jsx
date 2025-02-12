@@ -38,7 +38,7 @@ export default function Home() {
   
 
   return (
-    <div className="centered-container">
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', textAlign: 'center' }}>
       <h1>四国ホテル検索</h1>
       <Form onSearch={fetchHotels} />
       {error && <p style={{ color: 'red' }}>{error}</p>}
