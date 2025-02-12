@@ -31,7 +31,7 @@ const HotelDetail = () => {
   if (!hotel) return <p>ホテル情報を読み込み中...</p>;
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', height: '100vh', textAlign: 'center', overflowY: 'auto' }}>
       <h2>{hotel.hotelName}</h2>
       <img src={hotel.hotelImageUrl} alt={hotel.hotelName} width="400" />
       <p>{hotel.address1} {hotel.address2}</p>
