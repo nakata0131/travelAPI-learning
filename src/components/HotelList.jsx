@@ -11,7 +11,7 @@ export default function HotelList({ hotels }) {
         const hotelInfo = hotelItem.hotel[0].hotelBasicInfo;
 
         return (
-          <li key={index} style={{ marginBottom: "20px" }}>
+          <li key={index} style={{ marginBottom: "20px", listStyle: "none" }}>
             <h3>{hotelInfo.hotelName}</h3>
             <img src={hotelInfo.hotelImageUrl} alt={hotelInfo.hotelName} width="200" />
             <p>{hotelInfo.address1} {hotelInfo.address2}</p>
