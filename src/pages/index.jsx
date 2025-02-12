@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import Form from '../components/Form';
 import HotelList from '../components/HotelList';
-import '../styles/base.css';
 
 import { AppId } from "../config";
 
