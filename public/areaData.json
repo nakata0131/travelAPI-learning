@@ -1,51 +1,78 @@
 {
-  "香川県": {
-    "code": "kagawa",
-    "cities": {
-      "高松市": "takamatsu",
-      "丸亀市": "marugame",
-      "坂出市": "sakaide",
-      "善通寺市": "zentsuji",
-      "観音寺市": "kanonji",
-      "三豊市": "mitoyo"
-    }
-  },
   "徳島県": {
     "code": "tokushima",
-    "cities": {
-      "徳島市": "tokushima",
-      "鳴門市": "naruto",
-      "小松島市": "komatsushima",
-      "阿南市": "anan",
-      "吉野川市": "yoshinogawa",
-      "美馬市": "mima",
-      "三好市": "miyoshi"
-    }
+    "smallClasses": [
+      {
+        "smallClassCode": "tokushima",
+        "smallClassName": "徳島・鳴門"
+      },
+      {
+        "smallClassCode": "hokubu",
+        "smallClassName": "大歩危・祖谷・剣山・吉野川"
+      },
+      {
+        "smallClassCode": "nanbu",
+        "smallClassName": "阿南・日和佐・宍喰"
+      }
+    ]
+  },
+  "香川県": {
+    "code": "kagawa",
+    "smallClasses": [
+      {
+        "smallClassCode": "takamatsu",
+        "smallClassName": "高松・さぬき・東かがわ"
+      },
+      {
+        "smallClassCode": "sakaide",
+        "smallClassName": "坂出・宇多津・丸亀"
+      },
+      {
+        "smallClassCode": "kotohira",
+        "smallClassName": "琴平・観音寺"
+      },
+      {
+        "smallClassCode": "ritou",
+        "smallClassName": "小豆島・直島"
+      }
+    ]
   },
   "愛媛県": {
     "code": "ehime",
-    "cities": {
-      "松山市": "matsuyama",
-      "今治市": "imabari",
-      "宇和島市": "uwajima",
-      "八幡浜市": "yawatahama",
-      "新居浜市": "niihama",
-      "西条市": "saijo",
-      "大洲市": "ozu",
-      "伊予市": "iyo",
-      "東温市": "toon"
-    }
+    "smallClasses": [
+      {
+        "smallClassCode": "chuuyo",
+        "smallClassName": "松山・道後"
+      },
+      {
+        "smallClassCode": "touyo",
+        "smallClassName": "今治・しまなみ海道"
+      },
+      {
+        "smallClassCode": "saijo",
+        "smallClassName": "西条・新居浜・四国中央"
+      },
+      {
+        "smallClassCode": "nanyo",
+        "smallClassName": "宇和島・八幡浜"
+      }
+    ]
   },
   "高知県": {
-    "code": "kochi",
-    "cities": {
-      "高知市": "kochi",
-      "四万十市": "shimanto",
-      "南国市": "nankoku",
-      "土佐市": "tosa",
-      "須崎市": "susaki",
-      "香南市": "konan",
-      "香美市": "kami"
-    }
+    "code": "kouchi",
+    "smallClasses": [
+      {
+        "smallClassCode": "kouchi",
+        "smallClassName": "高知・南国・香南・伊野"
+      },
+      {
+        "smallClassCode": "toubu",
+        "smallClassName": "安芸・室戸"
+      },
+      {
+        "smallClassCode": "seibu",
+        "smallClassName": "足摺・四万十・宿毛・須崎"
+      }
+    ]
   }
 }
