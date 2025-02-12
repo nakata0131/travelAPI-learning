@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Form from '../components/Form';
 import HotelList from '../components/HotelList';
+import '../styles/base.css';
 
 import { AppId } from "../config";
 
@@ -38,7 +39,7 @@ export default function Home() {
   
 
   return (
-    <div>
+    <div className="centered-container">
       <h1>四国ホテル検索</h1>
       <Form onSearch={fetchHotels} />
       {error && <p style={{ color: 'red' }}>{error}</p>}
