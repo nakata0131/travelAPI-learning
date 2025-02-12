@@ -33,7 +33,7 @@ const HotelDetail = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', height: '100vh', textAlign: 'center', overflowY: 'auto' }}>
       <h2>{hotel.hotelName}</h2>
-      <img src={hotel.hotelImageUrl} alt={hotel.hotelName} width="400" style={{display: "block"}}/>
+      <img src={hotel.hotelImageUrl} alt={hotel.hotelName} width="400" style={{ display: 'block', margin: '0 auto' }}/>
       <p>{hotel.address1} {hotel.address2}</p>
       <p>最寄駅: {hotel.nearestStation || "情報なし"}</p>
       <p>電話番号: {hotel.telephoneNo || "情報なし"}</p>
