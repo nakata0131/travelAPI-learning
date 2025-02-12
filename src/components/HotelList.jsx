@@ -1,19 +1,26 @@
+import Link from "next/link";
+
 export default function HotelList({ hotels }) {
+  if (!hotels || hotels.length === 0) {
+    return <p>ホテル情報が見つかりませんでした。</p>;
+  }
+
   return (
-    <div>
-      <h2>ホテル一覧</h2>
-      {hotels.length > 0 ? (
-        <ul>
-          {hotels.map((hotel, index) => (
-            <li key={index}>
-              <h3>{hotel.hotelName}</h3>
-              <p>{hotel.hotelInformationUrl}</p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>ホテルが見つかりませんでした。</p>
-      )}
-    </div>
+    <ul>
+      {hotels.map((hotelItem, index) => {
+        const hotelInfo = hotelItem.hotel[0].hotelBasicInfo;
+
+        return (
+          <li key={index} style={{ marginBottom: "20px" }}>
+            <h3>{hotelInfo.hotelName}</h3>
+            <img src={hotelInfo.hotelImageUrl} alt={hotelInfo.hotelName} width="200" />
+            <p>{hotelInfo.address1} {hotelInfo.address2}</p>
+            <Link href={`/hotel/${hotelInfo.hotelNo}`}>
+              <button>詳細を見る</button>
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
   );
 }

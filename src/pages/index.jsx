@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Form from '../components/Form';
 import HotelList from '../components/HotelList';
+import Link from "next/link";
 import { AppId } from "../config";
 
 export default function Home() {
