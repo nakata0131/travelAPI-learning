@@ -52,7 +52,7 @@ export default function Form({ onSearch }) {
         ))}
       </select>
 
-      <label htmlFor="smallClass">小分類：</label>
+      <label htmlFor="smallClass">エリア：</label>
       <select id="smallClass" value={smallClass} onChange={handleSmallClassChange} disabled={!prefecture}>
         <option value="">選択してください</option>
         {areaData[prefecture]?.smallClasses.map((sc) => (
