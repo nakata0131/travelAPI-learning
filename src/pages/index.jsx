@@ -38,7 +38,8 @@ export default function Home() {
   
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', textAlign: 'center' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', height: '100vh', textAlign: 'center', overflowY: 'auto' }
+  }>
       <h1>四国ホテル検索</h1>
       <Form onSearch={fetchHotels} />
       {error && <p style={{ color: 'red' }}>{error}</p>}
