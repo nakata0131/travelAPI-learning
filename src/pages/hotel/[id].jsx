@@ -1,17 +1,15 @@
-// pages/hotel/[id].jsx
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const HotelDetail = () => {
   const router = useRouter();
-  const { id } = router.query; // URLのidを取得
+  const { id } = router.query;
   const [hotel, setHotel] = useState(null);
 
   useEffect(() => {
     if (!id) return;
 
-    // ローカルストレージなどで一覧からデータを受け渡す方法もあるが、APIで取得する例
     const fetchHotel = async () => {
       try {
         const response = await fetch(
